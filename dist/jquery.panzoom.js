@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.2
- * Updated: Sun Aug 28 2016
+ * Updated: Fri Oct 28 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -539,7 +539,7 @@
 					this.resetDimensions();
 					dims = this.dimensions;
 				}
-				var spaceWLeft, spaceWRight, scaleDiff;
+				var spaceWLeft, spaceWRight, spaceHTop, spaceHBottom, scaleWDiff, scaleHDiff;
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
@@ -552,14 +552,19 @@
 				// assume full space right
 				if (this.$parent.css('textAlign') !== 'center' || $.css(this.elem, 'display') !== 'inline') {
 					// offsetWidth gets us the width without the transform
-					scaleDiff = (width - this.elem.offsetWidth) / 2;
-					spaceWLeft = scaleDiff - dims.border.left;
-					spaceWRight = width - conWidth - scaleDiff + dims.border.right;
+					scaleWDiff = (width - this.elem.offsetWidth) / 2;
+					spaceWLeft = scaleWDiff - dims.border.left;
+					spaceWRight = width - conWidth - scaleWDiff + dims.border.right;
 				} else {
 					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
 				}
-				var spaceHTop = ((height - conHeight) / 2) + dims.border.top;
-				var spaceHBottom = ((height - conHeight) / 2) - dims.border.top - dims.border.bottom;
+				if ($.css(this.elem, 'display') !== 'inline') {
+					scaleHDiff = (height - this.elem.offsetHeight) / 2;
+					spaceHTop = scaleHDiff + dims.border.top;
+					spaceHBottom = height - conHeight - scaleHDiff - dims.border.bottom;
+				} else {
+					spaceHTop = spaceHBottom = ((height - conHeight) / 2);
+				}
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
 					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
